@@ -272,6 +272,7 @@ function processRequest(req, res, next) {
 
     var reqQuery = req.body,
         params = reqQuery.params || {},
+        jsonParams = reqQuery.jsonParams || {},
         methodURL = reqQuery.methodUri,
         httpMethod = reqQuery.httpMethod,
         dataFormat = reqQuery.dataFormat,
@@ -295,6 +296,15 @@ function processRequest(req, res, next) {
                 }
             } else {
                 delete params[param]; // Delete blank params
+            }
+        }
+    }
+
+    // Extract any parameters that are marked as JSON since they will otherwise be quoted
+    for (var jsonparam in jsonParams) {
+        if (jsonParams.hasOwnProperty(jsonparam) && params.hasOwnProperty(jsonparam)) {
+            if (jsonParams[jsonparam]) {
+                params[jsonparam] = JSON.parse(params[jsonparam])
             }
         }
     }
