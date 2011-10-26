@@ -97,20 +97,27 @@ ul
                                               - else
                                                   - var required =false
                                                   - var className =''
-                                              tr(class=className)
+                                              - var style =null
+                                              - if (parameter.Hidden ==true)
+                                                  - style ='display: none'
+                                              tr(class=className, style=style)
                                                   td.name=parameter.Name
                                                   td.parameter
+                                                      - if (parameter.Readonly =='Y')
+                                                          - var roValue ='readonly'
+                                                      - else
+                                                          - var roValue =null
                                                       - if (parameter.Type =='enumerated')
-                                                          select(name='params[' + parameter.Name + ']', placeholder=className)
+                                                          select(name='params[' + parameter.Name + ']', placeholder=className, readonly=roValue)
                                                             - if (parameter.Default =='')
-                                                                option(value='') 
+                                                                option(value='',readonly=roValue) 
                                                             - each choice in parameter.EnumeratedList
                                                                 - if (parameter.Default ==choice)
                                                                         option(value=choice, selected=true) #{choice}
                                                                 - else
                                                                         option(value=choice) #{choice}
                                                       - else if (parameter.Type =='boolean')
-                                                           select(name='params[' + parameter.Name + ']', placeholder=className)
+                                                           select(name='params[' + parameter.Name + ']', placeholder=className, readonly=roValue)
                                                                 - if (parameter.Default =='')
                                                                         option(value='') 
                                                                 - each choice in [apiInfo.booleanTrueVal,apiInfo.booleanFalseVal]
@@ -118,11 +125,11 @@ ul
                                                                            option(value=choice, selected=true) #{choice}
                                                                    - else
                                                                            option(value=choice) #{choice}
-                                                      - if (parameter.Type == 'JSON')
-                                                          input(name='jsonParams[' + parameter.Name + ']', type='hidden', value=1)          
-                                                          input(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className)
+                                                      - else if (parameter.Type == 'JSON' || parameter.Type == 'json')
+                                                          input(name='jsonParams[' + parameter.Name + ']', type='hidden', value=1)
+                                                          input(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className, readonly=roValue)
                                                       - else
-                                                          input(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className)
+                                                          input(name='params[' + parameter.Name + ']', value=parameter.Default, placeholder=className, readonly=roValue)
                                                   td.type=parameter.Type
                                                   td.description=parameter.Description || 'No description'
                             - if (method.headers && method.headers.length > 0)
